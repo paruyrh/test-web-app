@@ -5,8 +5,8 @@ export default function Home() {
   return (
     <main className={styles.main}>
       
-<h1>My First Heading</h1>
-<p>My first paragraph.</p>
+      <h1>My Second Heading</h1>
+      <p>My second paragraph.</p>
     </main>
   );
 }
