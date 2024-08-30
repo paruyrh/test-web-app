@@ -35,7 +35,7 @@ jobs:
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: app
+          name: node-app
           path: ./.next/standalone
 
   deploy:
@@ -51,7 +51,7 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: app
+          name: node-app
            
       - name: Login to Azure
         uses: azure/login@v2
