@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy Node.js app to Azure Web App - test-base-dev
+name: Build and deploy Node.js app to Azure Web App - itbaseam-test
 
 on:
   push:
@@ -14,29 +14,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '20.x'
+          node-version: '18.x'
 
       - name: npm install, build, and test
         run: |
           npm install
           npm run build --if-present
           npm run test --if-present
-      
-      - name: Copy static files
-        run: |
-          cp -R ./public ./.next/standalone/public
-          cp -R ./.next/static ./.next/standalone/.next/static
+
+      - name: Zip artifact for deployment
+        run: zip release.zip ./* -r
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: app
-          path: ./.next/standalone
+          name: node-app
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -49,22 +47,25 @@ jobs:
 
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          name: app
-           
+          name: node-app
+
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+      
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_74104A697C5448968C32C5ECF8E2842A }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B4C00DF9C94F4AD4B89AF81E4D343948 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_A5B13CD4BCDB407F89FDC25774003617 }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_442BB05A02074BD3A0A81565E51BC450 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_246E645A50E64C53B44E794DCA0153AA }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_4C76A79023C7441D8C9AAA714BFBC81A }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'test-base-dev'
+          app-name: 'itbaseam-test'
           slot-name: 'Production'
           package: .
           
